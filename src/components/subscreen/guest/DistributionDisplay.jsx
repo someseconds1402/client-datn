@@ -83,9 +83,10 @@ function DistributionDisplay() {
     }
     const fetchData = async () => {
       try {
+        dispatch(enebleLoadingScreen());
         const pandemicDataSrevice = await getPandemicDataAPI();
         setPandemicData(pandemicDataSrevice);
-        
+        dispatch(disableLoadingScreen());
       } catch (error) {
         console.log(error);
       }
@@ -124,6 +125,7 @@ function DistributionDisplay() {
     if(supplyTypeSelect != -1){
       const fetchData = async () => {
         try {
+          dispatch(enebleLoadingScreen());
           const data = await getSupplyAbilityAPI(pandemicSelect, supplyTypeSelect);
           // console.log(1, data);
           let province1 = [], province2 = [];
@@ -144,6 +146,7 @@ function DistributionDisplay() {
           })
           setProvinceList1(province1.length ? province1 : nullData);
           setProvinceList2(province2.length ? province2 : nullData);
+          dispatch(disableLoadingScreen());
           // console.log(province1, province2);
           
         } catch (error) {
