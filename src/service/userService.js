@@ -107,7 +107,7 @@ const clusterAPI = async(U, C, tagField, keys, weightList) => {
 
 const getSupplyAbilityAPI = async(pandemic_id, supply_type_id) => {
     try {
-        return (await axios.post(PATH_API.GET_SUPPLY_ABILITY, { pandemic_id, supply_type_id })).data;
+        return (await axios.post(PATH_API.BASE_URL + PATH_API.GET_SUPPLY_ABILITY, { pandemic_id, supply_type_id })).data;
     } catch (err) {
         console.log(err);
     }
