@@ -38,7 +38,7 @@ export const SCREEN_PATH = [
 ];
 
 export const PATH_API = {
-    BASE_URL: '',
+    BASE_URL: 'https://medical-supply-20184139.onrender.com',
     LOGIN_API: '/api/login',
     GET_PROVINCE_DATA: '/api/get-province',
     GET_PANDEMIC_DATA: '/api/get-pandemic',
