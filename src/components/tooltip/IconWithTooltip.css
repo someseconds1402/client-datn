@@ -1,0 +1,39 @@
+.icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.icon {
+    color: #333;
+    /* Màu của icon */
+    font-size: 24px;
+    /* Kích thước của icon */
+    cursor: pointer;
+}
+
+.tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 300px;
+    transform: translateX(-50%);
+    background-color: #333;
+    /* Màu nền của hướng dẫn mô tả */
+    color: #fff;
+    /* Màu chữ của hướng dẫn mô tả */
+    padding: 6px 12px;
+    border-radius: 4px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.icon-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-text {
+    font-size: 14px;
+    /* Kích thước chữ của hướng dẫn mô tả */
+}
