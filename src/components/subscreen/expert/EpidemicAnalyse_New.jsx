@@ -288,7 +288,7 @@ function EpidemicAnalyse_New() {
           <div className="w-full mt-4">
             <label className='text-lg flex items-center'>
               <input className='h-6 w-6' type="checkbox" checked={isShowWeight} onChange={changeIsShowWeight} />
-              <span className='ml-1'>Xem trọng số</span>
+              {/* <span className='ml-1'>Xem trọng số</span> */}
             </label>
           </div>
           <div className="mt-4 cursor-pointer" onClick={()=>{setShowTip(!showTip)}}>
@@ -305,7 +305,7 @@ function EpidemicAnalyse_New() {
         </div>
         <div className="col-span-1"></div>
         <div className="col-span-1">
-          <div className="btn btn-primary w-full" onClick={()=>{setShowWeightTable(true)}}>Thiết lập trọng số</div>
+          {/* <div className="btn btn-primary w-full" onClick={()=>{setShowWeightTable(true)}}>Thiết lập trọng số</div> */}
           {showWeightTable && <WeightTableEpidemic data={weight} func={closeDialog}/>}
           {!showResetData ? 
             <div className="btn btn-primary w-full mt-4" onClick={Clust}>Phân cụm</div>

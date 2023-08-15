@@ -26,7 +26,7 @@ export const SCREEN_PATH = [
     [
         '/epidemic-analyse',
         '/supply-analyse',
-        // '/distribution-analyse',
+        '/distribution-analyse',
         '/db-modify',
     ],
     // GUEST: 
@@ -38,7 +38,7 @@ export const SCREEN_PATH = [
 ];
 
 export const PATH_API = {
-    BASE_URL: 'https://medical-supply-20184139.onrender.com',
+    BASE_URL: '',
     LOGIN_API: '/api/login',
     GET_PROVINCE_DATA: '/api/get-province',
     GET_PANDEMIC_DATA: '/api/get-pandemic',
@@ -95,7 +95,7 @@ export const menuItems = {
     DELETE_ACCOUNT: "Xóa tài khoản",
     EPIDEMIC_ANALYSE: "Phân tích tình hình dịch bệnh",
     SUPPLIES_ANALYSE: "Phân tích khả năng hỗ trợ VTYT",
-    DISTRIBUTION_ANALYSE: "Phân tích tuyến đường phân bổ VTYT",
+    DISTRIBUTION_ANALYSE: "Đề xuất phân bổ VTYT",
     DB_MODYFY: "Thêm dữ liệu",
     EPIDEMIC_DISPLAY: "Tra cứu tình hình dịch bệnh",
     SUPPLIES_DISPLAY: "Tra cứu khả năng cung ứng VTYT",
@@ -111,14 +111,14 @@ export const sidebarMenu = [
     [
         menuItems.EPIDEMIC_ANALYSE,
         menuItems.SUPPLIES_ANALYSE,
-        // menuItems.DISTRIBUTION_ANALYSE,
+        menuItems.DISTRIBUTION_ANALYSE,
         menuItems.DB_MODYFY
     ],
     // GUEST:
     [
         menuItems.EPIDEMIC_DISPLAY,
         menuItems.SUPPLIES_DISPLAY,
-        menuItems.DISTRIBUTION_DISPLAY
+        // menuItems.DISTRIBUTION_DISPLAY
     ],
 ]
 

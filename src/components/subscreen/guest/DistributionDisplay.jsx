@@ -18,6 +18,8 @@ function DistributionDisplay() {
   const [pandemicSelect, setPandemicSelect] = useState(0);
   const [supplyType, setSupplyType] = useState([{id: -1, name: 'Chưa có dữ liệu'}]);
   const [supplyTypeSelect, setSupplyTypeSelect] = useState(-1);
+  const [listReceive, setListReceive] = useState([]);
+  const [listSupport, setListSupport] = useState([]);
 
   const [provinceList1, setProvinceList1] = useState([{
       province_id: -1,
@@ -58,20 +60,18 @@ function DistributionDisplay() {
       setFirstClick(true);
     }
     dispatch(enebleLoadingScreen());
-    const result = await getDistributionDataAPI(provinceSelect2, provinceSelect1);
-    let tableData = {
-      receive: province[provinceSelect1-1],
-      support: province[provinceSelect2-1],
-      supply_quantity: ((provinceList2.find(e=>e.province_id==provinceSelect2).supply_quantity)/10).toFixed(),
-      distance: result.distance,
-      path: result.path.map(e=>{
-        return {
-          start: province[e.start-1],
-          end: province[e.end-1],
-          distance: e.distance
-        }
-      })
-    };
+    const result = await getDistributionDataAPI(listReceive, listSupport);
+    // console.log(result);
+
+    let tableData = listReceive.map(e=>{
+      const a = result.res[e];
+      return {
+        receive: province[e],
+        support: a == -1 ? 'Chưa có đề xuất' : province[a[0]],
+        distance: a == -1 ? -1 : a[1]
+      }
+    })
+    
     setTableData(tableData);
     dispatch(disableLoadingScreen());
     console.log(tableData);
@@ -129,14 +129,17 @@ function DistributionDisplay() {
           const data = await getSupplyAbilityAPI(pandemicSelect, supplyTypeSelect);
           // console.log(1, data);
           let province1 = [], province2 = [];
+          let province1Id = [], province2Id = [];
           data.forEach(e=>{
             if(e.ability==1){
+              province1Id.push(e.province_id)
               province1.push({
                 province_id: e.province_id,
                 province_name: province[e.province_id-1],
                 supply_quantity: e.supply_quantity
               });
             } else if(e.ability==3){
+              province2Id.push(e.province_id)
               province2.push({
                 province_id: e.province_id,
                 province_name: province[e.province_id-1],
@@ -146,8 +149,11 @@ function DistributionDisplay() {
           })
           setProvinceList1(province1.length ? province1 : nullData);
           setProvinceList2(province2.length ? province2 : nullData);
+          setListReceive(province1Id)
+          setListSupport(province2Id)
           dispatch(disableLoadingScreen());
           // console.log(province1, province2);
+          // console.log(province1Id, province2Id);
           
         } catch (error) {
           console.log(error);
@@ -179,16 +185,21 @@ function DistributionDisplay() {
       {supplyTypeSelect != -1 && 
       <div className="grid grid-cols-4 mt-5 border-t-2 border-gray-500 rounded-lg">
         <div className="col-span-1 mt-3">
-          <div className='receive-list'>
+          {/* <div className='receive-list'>
             <div className=""><strong>Tỉnh thành nhận</strong></div>
             <Dropdown data={provinceList1.map(e=>e.province_name)} func={changeProvince1} />
           </div>
           <div className='support-list mt-3'>
             <div className=""><strong>Tỉnh thành hỗ trợ</strong></div>
             <Dropdown data={provinceList2.map(e=>e.province_name)} func={changeProvince2} />
-          </div>
-          <div className={"btn btn-primary w-full mt-4 "+
-            (provinceSelect1==-1 || provinceSelect2==-1 ?'disabled':'')} onClick={distribute}>Tra cứu</div>
+          </div> */}
+          {(provinceSelect1==-1 || provinceSelect2==-1) ? 
+            <div className="">
+              <div className="btn btn-primary w-full mt-4 disabled" onClick={distribute}>Tra cứu</div>
+              <h4 className='mt-4 text-red-800'>Chưa có dữ liệu</h4>
+            </div>:
+            <div className="btn btn-primary w-full mt-4 " onClick={distribute}>Tra cứu</div>
+          }
         </div>
         { (provinceSelect1!=-1 || provinceSelect2!=-1) && firstClick &&
           <div className="col-span-3 mt-3 ml-5">
@@ -196,33 +207,19 @@ function DistributionDisplay() {
             <div className="grid grid-cols-3">
               <div className='col-span-1 ml-5 pl-2 h-14 flex items-center border shadow-xl rounded-l-lg bg-gray-700 text-white'>
                 <strong>Tỉnh thành hỗ trợ</strong></div>
-              <div className='col-span-2 pl-3 h-14 flex items-center border shadow-xl rounded-r-lg bg-white'><strong>{tableData.support}</strong></div>
-
-              <div className='col-span-1 ml-5 pl-2 h-14 flex items-center border shadow-xl rounded-l-lg bg-gray-700 text-white'>
+              <div className='col-span-1 pl-2 h-14 flex items-center border shadow-xl bg-gray-700 text-white'>
                 <strong>Tỉnh thành nhận</strong></div>
-              <div className='col-span-2 pl-3 h-14 flex items-center border shadow-xl rounded-r-lg bg-white'><strong>{tableData.receive}</strong></div>
-
-              <div className='col-span-1 ml-5 pl-2 h-14 flex items-center border shadow-xl rounded-l-lg bg-gray-700 text-white'>
-                <strong>Số lượng VTYT hỗ trợ</strong></div>
-              <div className='col-span-2 pl-3 h-14 flex items-center border shadow-xl rounded-r-lg bg-white'><strong>{tableData.supply_quantity}</strong></div>
-
-              <div className='col-span-1 ml-5 pl-2 h-18 flex items-center border shadow-xl rounded-l-lg bg-gray-700 text-white'>
+              <div className='col-span-1 pl-2 h-14 flex items-center border shadow-xl rounded-r-lg bg-gray-700 text-white'>
                 <strong>Quãng đường</strong></div>
-              <div className='col-span-2 pl-3 h-min-18 flex items-center border shadow-xl rounded-b-lg rounded-r-lg bg-white'>
-                <div className='mt-2'>
-                  <strong>{tableData.distance} km</strong> (Tính theo lộ trình đường bộ)
-                  {!showPath ? 
-                    <p className="text-blue-500 underline cursor-pointer pl-1"onClick={()=>{setShowPath(true)}} ><strong>Xem lộ trình</strong></p>:
-                    <div>
-                      <p className="text-blue-500 underline cursor-pointer pl-1 mt-2"onClick={()=>{setShowPath(false)}} ><strong>Ẩn</strong></p>
-                      {tableData.path.map((e, index)=>{
-                        return <p className='pl-3'>{index}. {e.start} -&gt; {e.end} : <strong>{e.distance}</strong>km</p>
-                      })}
-                    </div>
-                  }
-                </div>
-
-              </div>
+              
+              {tableData.map(e=><>
+                <div className='col-span-1 ml-5 pl-2 h-14 flex items-center border shadow-xl rounded-l-lg bg-white'>
+                  <strong>{e.receive}</strong></div>
+                <div className='col-span-1 pl-2 h-14 flex items-center border shadow-xl bg-white'>
+                  <strong>{e.support}</strong></div>
+                <div className='col-span-1 pl-2 h-14 flex items-center border shadow-xl rounded-r-lg bg-white'>
+                  <strong><span className=' text-blue-800'>{e.distance}</span> km</strong></div>
+              </>)}
             </div>
           </div>
         }
